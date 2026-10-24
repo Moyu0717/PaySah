@@ -38,3 +38,27 @@ export async function seed(pool: pg.Pool, root = process.cwd()) {
   } catch (error) { await client.query('ROLLBACK'); throw error; }
   finally { client.release(); }
 }
+
+// Demo-only: clears one synthetic tenant's business records and re-applies the seeds, so used demo orders become new again.
+// Users and sessions stay; other tenants keep their data because every seed insert is ON CONFLICT DO NOTHING.
+export async function resetDemoTenant(pool: pg.Pool, tenantId: string, root = process.cwd()) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))', [`m2:${tenantId}`]);
+    const tenant = await client.query('SELECT 1 FROM tenants WHERE id=$1 AND is_demo FOR UPDATE', [tenantId]);
+    if (!tenant.rowCount) throw new Error('Only synthetic demo tenants can be reset');
+    await client.query('UPDATE orders SET current_receipt_id=NULL WHERE tenant_id=$1', [tenantId]);
+    await client.query('UPDATE receipts SET intake_message_id=NULL WHERE tenant_id=$1', [tenantId]);
+    for (const table of ['intake_bindings', 'verification_jobs', 'receipt_jobs', 'extraction_runs', 'receipt_corrections', 'payment_allocations', 'approvals',
+      'intake_messages', 'verifications', 'receipts', 'intake_links', 'activity_events', 'idempotency_keys', 'bank_transactions', 'orders', 'merchant_accounts', 'customers'])
+      await client.query(`DELETE FROM ${table} WHERE tenant_id=$1`, [tenantId]);
+    for (const name of (await readdir(join(root, 'db/seeds'))).filter(n => n.endsWith('.sql')).sort()) {
+      await client.query(await readFile(join(root, 'db/seeds', name), 'utf8'));
+    }
+    const orders = (await client.query('SELECT count(*)::int AS n FROM orders WHERE tenant_id=$1', [tenantId])).rows[0].n as number;
+    await client.query('COMMIT');
+    return { orders };
+  } catch (error) { await client.query('ROLLBACK'); throw error; }
+  finally { client.release(); }
+}

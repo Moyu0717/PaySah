@@ -47,7 +47,7 @@ function Workspace({api,actor,health,logout}:{api:ApiClient;actor:Actor;health?:
       <div className="account-menu"><div><strong>{actor.display_name}</strong><span>{actor.role==='OWNER'?'Owner':'Cashier'}</span></div><button className="button ghost small" disabled={leaving} onClick={async()=>{setLeaving(true);await logout();setLeaving(false);}}>{leaving?'Signing out…':text.switchAccount}</button><span className="account-avatar" aria-hidden="true">{actor.role==='OWNER'?'O':'C'}</span></div>
     </header>
     <div className="workspace"><div className="workspace-meta"><span className="demo-pill">Synthetic demo</span><span className="mode-label"><span className={`mode-dot ${health?'available':'unknown'}`} aria-hidden="true"/>{mode}</span><span className="workspace-region">MYR · Malaysia</span></div>
-      <main className="workspace-content" id="workspace-content" tabIndex={-1}>{orderId?<OrderDetail key={orderId} api={api} actor={actor} id={orderId}/>:route==='orders/new'?<NewOrder api={api}/>:route==='approvals'?<Approvals api={api} actor={actor}/>:route==='activity'?<Activity api={api}/>:<Orders api={api}/>}</main>
+      <main className="workspace-content" id="workspace-content" tabIndex={-1}>{orderId?<OrderDetail key={orderId} api={api} actor={actor} id={orderId}/>:route==='orders/new'?<NewOrder api={api}/>:route==='approvals'?<Approvals api={api} actor={actor}/>:route==='activity'?<Activity api={api} actor={actor}/>:<Orders api={api}/>}</main>
       <footer className="workspace-footer">Synthetic information only · No real payments · Times in MYT</footer>
     </div>
   </div>;

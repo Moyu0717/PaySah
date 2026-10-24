@@ -93,6 +93,10 @@ Set EXTRACTOR_MODE=runpod and configure RUNPOD_API_KEY, RUNPOD_ENDPOINT_ID and R
 
 Reviewed screenshots are in [submission/runpod](submission/runpod/). Their dates and limitations are listed in the submission index. Historical balances are not current quotations.
 
+## Current source
+
+The source includes the V4 interface, Owner-only demo reset, 180-second receipt-worker lease, English Telegram acknowledgements and their regression tests. See [demo operations](src/docs/DEMO_OPERATIONS.md). Reset deletes the selected demo shop's history; save proof first.
+
 ## Submission status and license
 
 The formal proposal, technical declaration and public pitch video are still being finalized. This repository is not represented as a complete competition submission. [The organizer's template](https://github.com/michaelzhngg/SDC_Hackathon_Submission_Template) defines the required documents.

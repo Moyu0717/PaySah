@@ -23,8 +23,8 @@ export function telegramNotifier(config:Config,fetcher:typeof fetch=fetch):Teleg
 }
 async function acknowledge(notify:TelegramNotifier,chatId:number,result:{status:string;replayed?:boolean;reason?:string|null},externalId?:string){
  if(result.replayed||result.status==='IGNORED')return;
- const reasons:Record<string,string>={LINK_INVALID:'提交链接无效或已过期',IMAGE_INVALID:'图片无效或不受支持'};
- const text=result.status==='ACCEPTED'?(externalId?`已连接订单 ${externalId.replace(/[\r\n]/g,' ')}。请把付款收据图片发到这里。`:'收据已收到，等待店员核对。这不代表付款已确认。'):reasons[result.reason??'']?`没能收下：${reasons[result.reason!]}。请联系店员重新获取链接。`:null;
+ const reasons:Record<string,string>={LINK_INVALID:'the submission link is invalid or has expired',IMAGE_INVALID:'the image is invalid or not supported'};
+ const text=result.status==='ACCEPTED'?(externalId?`Connected to order ${externalId.replace(/[\r\n]/g,' ')}. Please send the payment receipt image here.`:'Receipt received. The shop will check it. This does not mean the payment is confirmed.'):reasons[result.reason??'']?`Could not accept this: ${reasons[result.reason!]}. Please ask the shop for a new link.`:null;
  if(text)try{await notify(chatId,text);}catch{console.warn('Telegram acknowledgement failed; reception result retained.');}
 }
 export function telegramDownloader(config:Config,fetcher:typeof fetch=fetch):TelegramDownloader{

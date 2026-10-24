@@ -1,0 +1,2 @@
+# Migration checksums depend on exact bytes, including existing line endings.
+src/db/migrations/*.sql -text

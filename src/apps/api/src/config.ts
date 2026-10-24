@@ -32,7 +32,7 @@ const schema = z.object({
   RUNPOD_API_KEY:z.preprocess(v=>v===''?undefined:v,z.string().min(10).max(200).optional()),
   RUNPOD_ENDPOINT_ID:z.preprocess(v=>v===''?undefined:v,z.string().regex(/^[A-Za-z0-9_-]{4,64}$/).optional()),
   RUNPOD_MODEL:z.string().min(1).max(200).default('Qwen/Qwen2.5-VL-7B-Instruct'),
-  // Kept below the 120 s job lease so a CPU fallback still fits in the same lease.
+  // With the 15 s model lookup and up to 30 s of CPU reading this stays inside the 180 s job lease.
   RUNPOD_TIMEOUT_MS:z.coerce.number().int().min(5000).max(80000).default(75000),
 }).superRefine((value,ctx)=>{
   if(value.TELEGRAM_ENABLED==='true'&&(!value.TELEGRAM_TENANT_ID||!value.TELEGRAM_BOT_TOKEN||!value.TELEGRAM_WEBHOOK_SECRET||!value.TELEGRAM_BOT_USERNAME||!value.TELEGRAM_ALLOWED_SENDERS||!value.INTAKE_HMAC_SECRET))ctx.addIssue({code:'custom',message:'Telegram needs explicit tenant, bot, secret, allowlist and sender HMAC configuration'});

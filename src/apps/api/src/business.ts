@@ -6,6 +6,8 @@ import { createOrderSchema, demoLoginSchema } from '../../../packages/contracts/
 import { verificationRouter } from './modules/verification/router.js';
 import type {Config} from './config.js';
 import type {ReceiptStorage} from './modules/receipts/storage.js';
+import {resetDemoTenant} from './database-setup.js';
+import {projectRoot} from './paths.js';
 
 export type Actor = { id: string; tenant_id: string; role: 'OWNER' | 'CASHIER' | 'SYSTEM'; display_name: string };
 export class ApiError extends Error {
@@ -108,6 +110,12 @@ export function businessRouter(pool: pg.Pool,config:Config,storage:ReceiptStorag
     const { limit, offset } = pagination.parse(req.query);
     const result = await pool.query('SELECT e.id,e.actor_id,u.display_name AS actor_name,e.action,e.order_id,o.external_id,e.entity_type,e.entity_id,e.seq,e.payload,e.correlation_id,e.created_at FROM activity_events e JOIN users u ON u.tenant_id=e.tenant_id AND u.id=e.actor_id LEFT JOIN orders o ON o.tenant_id=e.tenant_id AND o.id=e.order_id WHERE e.tenant_id=$1 ORDER BY e.seq DESC LIMIT $2 OFFSET $3', [res.locals.actor.tenant_id, limit, offset]);
     res.json({ events: result.rows, limit, offset });
+  });
+  // Owner-only demo reset: the shop's synthetic orders, receipts and activity return to the seeded starting point.
+  router.post('/demo/reset', async (_req, res) => {
+    const actor: Actor = res.locals.actor;
+    if (actor.role !== 'OWNER') throw new ApiError(403, 'FORBIDDEN', '只有 Owner 可以重置演示数据');
+    res.json(await resetDemoTenant(pool, actor.tenant_id, projectRoot));
   });
   router.use(verificationRouter(pool,config,storage));
   return router;

@@ -1,3 +1,5 @@
+> Latest source update: see [current validation](../../submission/VALIDATION.md) for the 128-test reset/worker/English-bot release. The record below describes the earlier V4 baseline.
+
 # V4 source validation
 
 Checked on 24 October 2026 on Windows, Node.js 24, local PostgreSQL and installed Chrome. This release matches 138 SHA-256-verified source/configuration files (the fixture README is separately adapted for public documentation) from the final clean-source run: a new allowlisted copy installed dependencies with npm ci and passed build, 127 tests with zero skips, the local CPU deployment/restart smoke test, and 11 business browser scenarios. The final workspace also passed 5 intake browser scenarios and 8 V4 layout/story checks with zero page errors.

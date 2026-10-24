@@ -30,7 +30,7 @@ export async function processReceiptJob(pool:pg.Pool,storage:ReceiptStorage,extr
     // Attribute extraction events to the original intake actor; not an approval identity.
     actor=(await client.query("SELECT u.* FROM activity_events e JOIN users u ON u.tenant_id=e.tenant_id AND u.id=e.actor_id WHERE e.tenant_id=$1 AND e.entity_type='receipt' AND e.entity_id=$2 AND e.action='receipt.image_saved' ORDER BY seq LIMIT 1",[job.tenant_id,receipt.id])).rows[0];
     job.lease_token=randomUUID();
-    await client.query("UPDATE receipt_jobs SET status='RUNNING',attempts=attempts+1,lease_token=$2,lease_until=now()+interval '120 seconds' WHERE id=$1",[job.id,job.lease_token]);
+    await client.query("UPDATE receipt_jobs SET status='RUNNING',attempts=attempts+1,lease_token=$2,lease_until=now()+interval '180 seconds' WHERE id=$1",[job.id,job.lease_token]);
     await client.query("UPDATE receipts SET extraction_state='RUNNING' WHERE tenant_id=$1 AND id=$2",[job.tenant_id,receipt.id]);
     await client.query('COMMIT');
   }catch(e){await client.query('ROLLBACK');throw e;}finally{client.release();}

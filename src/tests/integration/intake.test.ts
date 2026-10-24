@@ -136,13 +136,13 @@ test('I0/I1 tenant isolation, durable intake and human-only payment',{skip:!url}
   });
   await t.test('P1-5 acknowledgements follow commit, failures preserve HTTP result, replay does not resend',async st=>{
    const o=await order(),l=await link(o.id),start=update('/start '+l.token);ackProbe=String(start.update_id);
-   assert.equal((await (await telegram(start)).json()).status,'ACCEPTED');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:`已连接订单 ${o.external_id}。请把付款收据图片发到这里。`,committed:true});
-   download=async()=>png();const image=update();ackProbe=String(image.update_id);assert.equal((await (await telegram(image)).json()).status,'ACCEPTED');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:'收据已收到，等待店员核对。这不代表付款已确认。',committed:true});
+   assert.equal((await (await telegram(start)).json()).status,'ACCEPTED');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:`Connected to order ${o.external_id}. Please send the payment receipt image here.`,committed:true});
+   download=async()=>png();const image=update();ackProbe=String(image.update_id);assert.equal((await (await telegram(image)).json()).status,'ACCEPTED');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:'Receipt received. The shop will check it. This does not mean the payment is confirmed.',committed:true});
    const sent=acknowledgements.length;assert.equal((await (await telegram(image)).json()).replayed,true);assert.equal(acknowledgements.length,sent);
    const warn=st.mock.method(console,'warn',()=>{}),next=update();ackProbe=String(next.update_id);ackFailure=true;
    const response=await telegram(next);assert.equal(response.status,200);assert.equal((await response.json()).status,'ACCEPTED');assert.equal(acknowledgements.length,sent+1);assert.equal(warn.mock.calls.length,1);assert.ok(!JSON.stringify(warn.mock.calls.map(c=>c.arguments)).includes('synthetic-token-only'));assert.equal(acknowledgements.at(-1).committed,true);
-   ackFailure=false;download=async()=>Buffer.from('bad image');const bad=update();ackProbe=String(bad.update_id);assert.equal((await (await telegram(bad)).json()).reason,'IMAGE_INVALID');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:'没能收下：图片无效或不受支持。请联系店员重新获取链接。',committed:true});
-   const invalid=update('/start '+'a'.repeat(43));ackProbe=String(invalid.update_id);assert.equal((await (await telegram(invalid)).json()).reason,'LINK_INVALID');assert.match(acknowledgements.at(-1).text,/提交链接无效或已过期/);assert.equal(acknowledgements.at(-1).committed,true);ackProbe=undefined;
+   ackFailure=false;download=async()=>Buffer.from('bad image');const bad=update();ackProbe=String(bad.update_id);assert.equal((await (await telegram(bad)).json()).reason,'IMAGE_INVALID');assert.deepEqual(acknowledgements.at(-1),{chat_id:123,text:'Could not accept this: the image is invalid or not supported. Please ask the shop for a new link.',committed:true});
+   const invalid=update('/start '+'a'.repeat(43));ackProbe=String(invalid.update_id);assert.equal((await (await telegram(invalid)).json()).reason,'LINK_INVALID');assert.match(acknowledgements.at(-1).text,/submission link is invalid or has expired/);assert.equal(acknowledgements.at(-1).committed,true);ackProbe=undefined;
   });
   await t.test('retry preserves original order binding during /start rebind and rejects out-of-order messages',async()=>{
    const a=await order(),b=await order(),la=await link(a.id),lb=await link(b.id);
