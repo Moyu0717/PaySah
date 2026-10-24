@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.local/
+storage/
+*.log
+reference/
+.codex*/
+.claude*/
+AGENTS.md
+CLAUDE.md
+WORK_LOG.md
+evaluation/acceptance/
+evaluation/intake/
+evaluation/m3/

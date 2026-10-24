@@ -1,0 +1,18 @@
+{
+  "version": "synthetic-decision-tasks.v1",
+  "status": "NOT RUN",
+  "audience": "Observer answer key; do not provide to participants or use as application/model input",
+  "data": "Fictional Demo Kedai A, independent synthetic feed; no real merchant records",
+  "tasks": [
+    {"id":"U01","role":"CASHIER","total_sen":12800,"source":"SALES_ORDER","fixture":"normal","question":"Review this payable and choose the next permitted action.","expected_decision":"CONFIRM_WITH_PERMISSION","reason":"Unique booked credit matches; human confirmation and separate release still required."},
+    {"id":"U02","role":"CASHIER","total_sen":78000,"source":"SALES_ORDER","fixture":"high_value","question":"Review this payable and choose the next permitted action.","expected_decision":"REFER_OWNER","reason":"RM780 exceeds RM500; Cashier cannot approve or release."},
+    {"id":"U03","role":"OWNER","total_sen":12800,"source":"SALES_ORDER","fixture":"partial","question":"Review this payable and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"Receipt/feed RM50 does not fully cover RM128. Partial accumulation is deferred; remain unpaid/on hold."},
+    {"id":"U04","role":"OWNER","total_sen":12800,"source":"SALES_ORDER","fixture":"wrong_account","question":"Review this payable and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"Wrong full recipient account; Owner approval cannot replace independent evidence."},
+    {"id":"U05","role":"CASHIER","total_sen":12800,"source":"SALES_ORDER","fixture":"scheduled","question":"Review this payable and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"Scheduled transfer is not successful booked payment evidence."},
+    {"id":"U06","role":"CASHIER","total_sen":12800,"source":"SALES_ORDER","fixture":"money_request","question":"Review this payable and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"Money request is not a transfer receipt."},
+    {"id":"U07","role":"OWNER","total_sen":12800,"source":"SALES_ORDER","fixture":"no_bank","question":"Review this payable and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"No matching booked credit; no manual receipt-only confirmation is supported."},
+    {"id":"U08","role":"OWNER","total_sen":12800,"source":"SALES_ORDER","fixture":"normal","history":"The identical normal.png bytes were already submitted on a different unpaid order U08-PRIOR. No credit has been allocated yet.","question":"Review this second submission and choose the next permitted action.","expected_decision":"BLOCK_PENDING_EVIDENCE","reason":"Exact original reuse across orders blocks confirmation; do not allocate the same evidence twice."},
+    {"id":"U09","role":"OWNER","total_sen":78000,"source":"SALES_ORDER","fixture":"high_value","history":"Pending approval was created for receipt revision 1. A subsequent reasoned customer-reference correction produced revision 2 and superseded that approval; payment remains unpaid.","question":"May the old approval be used now? Choose the next permitted action.","expected_decision":"RERUN_REVIEW","reason":"Old evidence/approval cannot be approved; use current revision and request a new review."},
+    {"id":"U10","role":"CASHIER","total_sen":12800,"source":"DEPOSIT","fixture":"normal","history":"This payable is a RM128 booking deposit for a fictional RM1000 booking; the current record covers only the deposit.","question":"Review only the current payable and choose the next permitted action.","expected_decision":"CONFIRM_WITH_PERMISSION","reason":"Current deposit due and unique credit match; do not claim the full booking is settled."}
+  ]
+}

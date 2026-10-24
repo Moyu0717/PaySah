@@ -1,0 +1,79 @@
+{
+  "version": "study-inputs.v1",
+  "data": "Team synthetic setup only; no answer key or participant feedback",
+  "scenarios": [
+    {
+      "id": "U01",
+      "role": "CASHIER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "normal"
+    },
+    {
+      "id": "U02",
+      "role": "CASHIER",
+      "total_sen": 78000,
+      "context": "SALES_ORDER",
+      "fixture": "high_value"
+    },
+    {
+      "id": "U03",
+      "role": "OWNER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "partial"
+    },
+    {
+      "id": "U04",
+      "role": "OWNER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "wrong_account"
+    },
+    {
+      "id": "U05",
+      "role": "CASHIER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "scheduled"
+    },
+    {
+      "id": "U06",
+      "role": "CASHIER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "money_request"
+    },
+    {
+      "id": "U07",
+      "role": "OWNER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "no_bank"
+    },
+    {
+      "id": "U08",
+      "role": "OWNER",
+      "total_sen": 12800,
+      "context": "SALES_ORDER",
+      "fixture": "normal",
+      "history": "The identical normal.png bytes were already submitted on a different unpaid order U08-PRIOR. No credit has been allocated yet."
+    },
+    {
+      "id": "U09",
+      "role": "OWNER",
+      "total_sen": 78000,
+      "context": "SALES_ORDER",
+      "fixture": "high_value",
+      "history": "Pending approval was created for receipt revision 1. A subsequent reasoned customer-reference correction produced revision 2 and superseded that approval; payment remains unpaid."
+    },
+    {
+      "id": "U10",
+      "role": "CASHIER",
+      "total_sen": 12800,
+      "context": "DEPOSIT",
+      "fixture": "normal",
+      "history": "This payable is a RM128 booking deposit for a fictional RM1000 booking; the current record covers only the deposit."
+    }
+  ]
+}

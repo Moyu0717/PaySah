@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:17.6
+    environment:
+      POSTGRES_DB: paysah
+      POSTGRES_USER: paysah
+      POSTGRES_PASSWORD: paysah_local_only
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - paysah_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paysah -d paysah"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  paysah_db:

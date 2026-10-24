@@ -1,0 +1,62 @@
+{
+  "kind": "team synthetic channel demonstration; one confirmation per order",
+  "rows": [
+    {
+      "external_id": "DEMO-A-TG1",
+      "order_id": "40000000-0000-4000-8000-000000000101",
+      "bank_transaction_id": "60000000-0000-4000-8000-000000000101",
+      "file": "DEMO-A-TG1.png",
+      "sha256": "1224f637024794dd1230b124e78f47565b47beebe64c57e5a91a7993f1bb45c3",
+      "fields": {
+        "amount_sen": 4500,
+        "currency": "MYR",
+        "bank_transaction_ref": "DEMO-BANK-450",
+        "customer_reference": "DEMO-A-TG1",
+        "recipient_account": "DEMO-ACCOUNT-A",
+        "occurred_at": "2026-10-23T16:00:00Z",
+        "status": "SUCCESS",
+        "document_type": "TRANSFER_RECEIPT"
+      },
+      "expected_eligible": true,
+      "required_role": "CASHIER"
+    },
+    {
+      "external_id": "DEMO-A-TG2",
+      "order_id": "40000000-0000-4000-8000-000000000102",
+      "bank_transaction_id": "60000000-0000-4000-8000-000000000102",
+      "file": "DEMO-A-TG2.png",
+      "sha256": "36654643570442bf7f309c3ef3de0a8613750e8d69fdbc50f76423dc7e8a1764",
+      "fields": {
+        "amount_sen": 6250,
+        "currency": "MYR",
+        "bank_transaction_ref": "DEMO-BANK-625",
+        "customer_reference": "DEMO-A-TG2",
+        "recipient_account": "DEMO-ACCOUNT-A",
+        "occurred_at": "2026-10-23T16:00:00Z",
+        "status": "SUCCESS",
+        "document_type": "TRANSFER_RECEIPT"
+      },
+      "expected_eligible": true,
+      "required_role": "CASHIER"
+    },
+    {
+      "external_id": "DEMO-A-GF1",
+      "order_id": "40000000-0000-4000-8000-000000000103",
+      "bank_transaction_id": "60000000-0000-4000-8000-000000000103",
+      "file": "DEMO-A-GF1.png",
+      "sha256": "3053db78c6f54c05c4995d9ba7de6a784aabeeab845968451c26825f751f2553",
+      "fields": {
+        "amount_sen": 8800,
+        "currency": "MYR",
+        "bank_transaction_ref": "DEMO-BANK-880",
+        "customer_reference": "DEMO-A-GF1",
+        "recipient_account": "DEMO-ACCOUNT-A",
+        "occurred_at": "2026-10-23T16:00:00Z",
+        "status": "SUCCESS",
+        "document_type": "TRANSFER_RECEIPT"
+      },
+      "expected_eligible": true,
+      "required_role": "CASHIER"
+    }
+  ]
+}
