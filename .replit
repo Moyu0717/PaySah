@@ -1,6 +1,6 @@
 # Candidate configuration; actual Replit deployment acceptance remains required.
-entrypoint = "apps/api/src/server.ts"
-run = ["npm", "run", "start:deployment"]
+entrypoint = "src/apps/api/src/server.ts"
+run = ["sh", "-c", "cd src && npm run start:deployment"]
 modules = ["nodejs-24"]
 
 [env]
@@ -9,8 +9,8 @@ PORT = "3000"
 DEMO_MODE = "true"
 
 [deployment]
-build = ["sh", "-c", "npm ci && npm run build"]
-run = ["node", "dist/apps/api/src/deployment.js"]
+build = ["sh", "-c", "cd src && npm ci && npm run build"]
+run = ["sh", "-c", "cd src && node dist/apps/api/src/deployment.js"]
 
 [[ports]]
 localPort = 3000

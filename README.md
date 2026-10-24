@@ -1,14 +1,64 @@
 # PaySah
 
-Payment receipt verification for Malaysian small businesses. Staff compare receipt details with independent bank credits, review explainable flags, and record payment and release decisions.
+Receipt verification for Malaysian small businesses: compare receipt details with independent bank evidence before confirming payment or releasing goods.
 
-This is a synthetic-data hackathon demonstration. A receipt image alone never proves payment. No real bank connection or payment processing is included.
+## Team
 
-## Run locally
+| Field | Details |
+| --- | --- |
+| Team name | UTeMkuCemerlang |
+| Team domain | Domain 2 — Orbyte Smart SME Challenge |
+| SDG alignment | SDG 8.3 — support micro and small enterprises |
 
-Requirements: Node.js 24, npm, and PostgreSQL 17. A portable PostgreSQL helper is included and has been exercised on Windows without Docker.
+## Links
+
+- [Live demo](https://paysah.replit.app/#orders)
+- [GitHub repository](https://github.com/Moyu0717/PaySah)
+- Public pitch video: pending completion.
+- Slide deck: pending final link.
+- [Submission files and remaining items](submission/README.md)
+
+## What it does
+
+Small merchants receive transfer screenshots but still need to establish whether money arrived. PaySah extracts receipt fields, checks explainable rules against independent bank records, and keeps human payment and release decisions separate. Cashier and Owner permissions, duplicate evidence detection and activity records support review.
+
+The public prototype uses synthetic customers, receipts and bank credits. It does not connect to a real bank or move money. Screenshots alone never establish payment. Partial or invalid evidence stays blocked; clean payments above RM500 require Owner approval.
+
+## Project structure
+
+```text
+src/                         Complete runnable application
+  apps/web/                  React/Vite interface and interactive product story
+  apps/api/                  Express API, verification rules and receipt worker
+  packages/contracts/        Shared validation contracts
+  db/                        PostgreSQL migrations and synthetic seeds
+  integrations/google-form/  Google Apps Script connector
+  fixtures/                  Synthetic demo images and expected fields
+  scripts/                   Database, evaluation and verification commands
+  tests/                     Automated tests
+  docs/                      Public implementation notes
+  submission/                Technical disclosures and prior validation notes
+  .env.example               Configuration template; no live credentials
+  package.json               Commands and dependencies
+submission/
+  replit/                    Reviewed Replit screenshots
+  runpod/                    Reviewed RunPod screenshots
+  README.md                  Required PDF filenames and completion status
+README.md
+LICENSE                      Apache License 2.0
+.replit                      Starts the application from src/
+.gitignore                   Excludes credentials, build output and local records
+```
+
+The two formal PDFs will be added to submission/ when finalized. The organizer template also lists a Replit proof-of-use PDF and a RunPod proof-of-use PDF; the included screenshots are supporting evidence, not a claim that those PDFs are complete.
+
+## How to run
+
+Requirements: Node.js 24, npm and PostgreSQL 17 for the local helper. Run application commands from **src/**.
 
 ```powershell
+git clone https://github.com/Moyu0717/PaySah.git
+cd PaySah/src
 npm ci
 Copy-Item .env.example .env
 npm run db:local:start
@@ -17,50 +67,34 @@ npm run db:seed
 npm run dev
 ```
 
-Copy the environment template only for a fresh checkout; keep existing credentials private. The web app is at http://127.0.0.1:5173 and API at http://127.0.0.1:3000. For a managed PostgreSQL database, configure DATABASE_URL and omit db:local:start. The example database password is for local development only.
+Open http://127.0.0.1:5173 and select a synthetic shop and role. Copy the environment template only on a fresh checkout. For a managed database, set DATABASE_URL and skip the portable database command. The example password is development-only.
 
-Default EXTRACTOR_MODE=fixture uses synthetic fields. Set EXTRACTOR_MODE=cpu_ocr to read actual image pixels and run npm run worker in a separate terminal. Stop the portable database with npm run db:local:stop.
-
-## Workflow
-
-1. Choose a seeded demo staff account and an unpaid order.
-2. Attach a synthetic receipt from the catalog or use a configured intake channel.
-3. Inspect extracted fields, independent bank-credit matches, and reasons for flags.
-4. Resolve missing or conflicting evidence. Partial payment cannot be treated as fully paid; amounts above RM500 require Owner approval.
-5. Confirm eligible payment and record release as separate operations. Activity records preserve the decisions.
-
-Tenant boundaries, permissions, versions, and idempotency are enforced server-side. Synthetic labels on receipt images intentionally identify test data.
-
-## Build and verify
+The default fixture mode needs no GPU. For actual CPU image reading, set EXTRACTOR_MODE=cpu_ocr and run npm run worker in another terminal, also from src/.
 
 ```sh
+# From src/
 npm run build
 npm run start:deployment
 ```
 
-The deployment entry starts the API and receipt worker. Configure TEST_DATABASE_URL to a dedicated test database before running npm test. Integration tests create isolated schemas; missing database configuration can skip database tests. Browser checks use installed Chrome: npm run smoke:m3, npm run smoke:intake and npm run smoke:ui-v4. npm run verify:clean installs dependencies into a fresh copy and runs local verification. These checks do not establish live Telegram, Google Form, Replit or GPU readiness.
+Set TEST_DATABASE_URL to a dedicated test database, then run npm test. Database tests may skip if it is absent. Browser checks use installed Chrome: npm run smoke:m3 and npm run smoke:intake. See [detailed source instructions](src/README.md) and [release validation](submission/VALIDATION.md).
 
-## Replit and RunPod
+## How we use Replit
 
-The included .replit file builds with npm ci and npm run build, then runs the deployment entry. Configure DATABASE_URL and other credentials in Replit Secrets, migrate and seed the dedicated demo database, and set HOST=0.0.0.0. Set STORAGE_DRIVER=replit with a private App Storage bucket for persistent images. Local storage is a development option.
+Replit hosts the web application, Express API and receipt worker at the live demo URL. The deployment uses PostgreSQL and private App Storage; server credentials are configured through Secrets. Reviewed screenshots are in [submission/replit](submission/replit/).
 
-For GPU extraction, set EXTRACTOR_MODE=runpod, RUNPOD_API_KEY, RUNPOD_ENDPOINT_ID and RUNPOD_MODEL on the server. The application adapter uses a RunPod Serverless vLLM endpoint with Qwen/Qwen2.5-VL-7B-Instruct and falls back to CPU OCR on failure while recording the source. Fixture and CPU paths run independently of GPU credits. npm run runpod:check sends one synthetic image and may incur provider charges.
+For a fresh import, the root .replit configuration installs and builds within src/. Set DATABASE_URL, HOST=0.0.0.0 and the relevant variables from src/.env.example. Configure STORAGE_DRIVER=replit with a private bucket for persistent images. Apply migrations deliberately using cd src and npm run db:migrate. Seed only a dedicated synthetic demo database. Do not overwrite an existing production database with development data.
 
-The separate eval:runpod experiment uses a different custom-handler contract; run eval:ocr-expanded to generate its CPU baseline before use. It is not the application adapter.
+## How we use RunPod
 
-## Receipt intake
+The receipt worker sends an image to a RunPod Serverless vLLM endpoint running Qwen/Qwen2.5-VL-7B-Instruct and parses structured receipt fields. Deterministic server rules perform payment verification. RunPod does not approve payments. Failed GPU reading can fall back to Tesseract CPU OCR, with the actual provider and fallback reason recorded.
 
-Telegram and Google Form intake are disabled by default. See .env.example and [intake contract](docs/INTAKE_CONTRACT.md). Google Apps Script source is in integrations/google-form. Configure dedicated test accounts and private server secrets before enabling external integrations. A receipt acknowledgement means received, not paid. WhatsApp replies are templates; a live WhatsApp integration is not included.
+Set EXTRACTOR_MODE=runpod and configure RUNPOD_API_KEY, RUNPOD_ENDPOINT_ID and RUNPOD_MODEL server-side. Never place credentials in the browser or repository. The application adapter is in src/apps/api/src/modules/receipts/runpod.ts. The separate experimental eval:runpod handler is not the deployed application adapter.
 
-## Repository contents
+Reviewed screenshots are in [submission/runpod](submission/runpod/). Their dates and limitations are listed in the submission index. Historical balances are not current quotations.
 
-- apps/web: React/Vite staff interface.
-- apps/api: Express API, verification rules, storage and worker.
-- packages/contracts: shared validation contracts.
-- db: PostgreSQL migrations and synthetic seed data.
-- fixtures, tests, scripts: reproducible datasets and checks.
-- submission: tool declaration and outstanding submission requirements.
+## Submission status and license
 
-The current interface is V4 Lavender glass, with a desktop sidebar and dedicated mobile card layouts for orders, receipt review, Owner decisions and activity. The existing tenant, version, approval and intake rules remain in force. Use the root URL or #orders to enter the workspace directly. The public #story page illustrates four synthetic cases without business writes or RunPod calls; Three.js loads only on that page and has a static fallback. Evidence matched is not paid, and payment confirmation and release remain separate actions. Local validation and its limits are recorded in submission/VALIDATION.md; live channel acceptance and cloud redeployment remain pending.
+The formal proposal, technical declaration and public pitch video are still being finalized. This repository is not represented as a complete competition submission. [The organizer's template](https://github.com/michaelzhngg/SDC_Hackathon_Submission_Template) defines the required documents.
 
-Project license: [Apache-2.0](LICENSE). Third-party software retains its respective licenses; see [Three.js MIT notice](apps/web/THIRD_PARTY_NOTICES.md). See [tool declaration](submission/TOOLS_DECLARATION.md).
+Licensed under [Apache-2.0](LICENSE). Third-party packages retain their own licenses. Development-tool disclosures remain in [the source declaration](src/submission/TOOLS_DECLARATION.md) until the official technical declaration is finalized.
