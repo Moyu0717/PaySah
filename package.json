@@ -45,7 +45,8 @@
     "eval:runpod-vlm": "tsx --env-file-if-exists=.env scripts/eval-runpod-vlm.ts",
     "runpod:check": "tsx --env-file-if-exists=.env scripts/eval-runpod-vlm.ts --limit=1",
     "test:intake": "tsx --env-file-if-exists=.env --test tests/integration/intake.test.ts",
-    "smoke:intake": "tsx --env-file-if-exists=.env scripts/smoke-intake.ts"
+    "smoke:intake": "tsx --env-file-if-exists=.env scripts/smoke-intake.ts",
+    "smoke:ui-v4": "tsx --env-file-if-exists=.env scripts/smoke-ui-v4.ts"
   },
   "dependencies": {
     "@replit/object-storage": "1.0.0",
@@ -68,6 +69,7 @@
     "@types/pg": "8.15.6",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@types/three": "0.186.0",
     "concurrently": "9.2.5",
     "embedded-postgres": "17.10.0-beta.17",
     "tsx": "4.20.6",

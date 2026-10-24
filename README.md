@@ -38,7 +38,7 @@ npm run build
 npm run start:deployment
 ```
 
-The deployment entry starts the API and receipt worker. Configure TEST_DATABASE_URL to a dedicated test database before running npm test. Integration tests create isolated schemas; missing database configuration can skip database tests. Browser checks use installed Chrome: npm run smoke:m3 and npm run smoke:intake. npm run verify:clean installs dependencies into a fresh copy and runs local verification. These checks do not establish live Telegram, Google Form, Replit or GPU readiness.
+The deployment entry starts the API and receipt worker. Configure TEST_DATABASE_URL to a dedicated test database before running npm test. Integration tests create isolated schemas; missing database configuration can skip database tests. Browser checks use installed Chrome: npm run smoke:m3, npm run smoke:intake and npm run smoke:ui-v4. npm run verify:clean installs dependencies into a fresh copy and runs local verification. These checks do not establish live Telegram, Google Form, Replit or GPU readiness.
 
 ## Replit and RunPod
 
@@ -61,6 +61,6 @@ Telegram and Google Form intake are disabled by default. See .env.example and [i
 - fixtures, tests, scripts: reproducible datasets and checks.
 - submission: tool declaration and outstanding submission requirements.
 
-The current shipped interface is the implemented V3. Lavender glass and 3D concepts are future design work, not part of this release. Previous local checks recorded 127 passing integration tests; current export checks are recorded in submission/VALIDATION.md. Live channel acceptance is still pending.
+The current interface is V4 Lavender glass, with a desktop sidebar and dedicated mobile card layouts for orders, receipt review, Owner decisions and activity. The existing tenant, version, approval and intake rules remain in force. Use the root URL or #orders to enter the workspace directly. The public #story page illustrates four synthetic cases without business writes or RunPod calls; Three.js loads only on that page and has a static fallback. Evidence matched is not paid, and payment confirmation and release remain separate actions. Local validation and its limits are recorded in submission/VALIDATION.md; live channel acceptance and cloud redeployment remain pending.
 
-Project license: [Apache-2.0](LICENSE). Third-party software retains its respective licenses. See [tool declaration](submission/TOOLS_DECLARATION.md).
+Project license: [Apache-2.0](LICENSE). Third-party software retains its respective licenses; see [Three.js MIT notice](apps/web/THIRD_PARTY_NOTICES.md). See [tool declaration](submission/TOOLS_DECLARATION.md).
